@@ -1,0 +1,176 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+      "major": 3,
+      "minor": 30,
+      "patch": 0
+    },
+    "configurePresets": [
+      {
+        "name": "pedantic",
+        "hidden": true,
+        "warnings": {
+          "dev": true,
+          "deprecated": true,
+          "uninitialized": true,
+          "unusedCli": true,
+          "systemVars": false
+        },
+        "errors": {
+          "dev": false,
+          "deprecated": true
+        }
+      },
+      {
+        "name": "default",
+        "displayName": "Default",
+        "binaryDir": "${sourceDir}/builds/${presetName}",
+        "generator": "Ninja Multi-Config",
+        "inherits": "pedantic",
+        "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "cacheVariables": {
+            "CMAKE_CONFIGURATION_TYPES": "Release;RelWithDebInfo;Debug",
+            "CMAKE_PREFIX_PATH": "$env{CMAKE_PREFIX_PATH}",
+            "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/lld.toolchain.cmake"
+        }
+      },
+      {
+        "name": "ci",
+        "displayName": "Configure HDB for CI",
+        "inherits": "default",
+        "cacheVariables": {
+            "ENABLE_SANITIZER_UNDEFINED_BEHAVIOR": "$env{ENABLE_SANITIZER_UNDEFINED_BEHAVIOR}",
+            "ENABLE_SANITIZER_ADDRESS": "$env{ENABLE_SANITIZER_ADDRESS}",
+            "CMAKE_VERBOSE_MAKEFILE": "True"
+        }
+      }
+    ],
+    "buildPresets": [
+      {
+        "name": "default",
+        "hidden": true,
+        "configurePreset": "default"
+      },
+      {
+        "name": "debug",
+        "configurePreset": "default",
+        "displayName": "Debug",
+        "configuration": "Debug"
+      },
+      {
+        "name": "release",
+        "configurePreset": "default",
+        "displayName": "Release",
+        "configuration": "Release"
+      },
+      {
+        "name": "relwithdebinfo",
+        "configurePreset": "default",
+        "displayName": "RelWithDebInfo",
+        "configuration": "RelWithDebInfo"
+      },
+      {
+        "name": "ci",
+        "configurePreset": "ci"
+      },
+      {
+        "name": "ci-release",
+        "configurePreset": "ci",
+        "displayName": "CI Release",
+        "configuration": "Release"
+      },
+      {
+        "name": "ci-debug",
+        "configurePreset": "ci",
+        "displayName": "CI Debug",
+        "configuration": "Debug"
+      }
+    ],
+    "testPresets": [
+      {
+        "name": "test-base",
+        "hidden": true,
+        "output": {
+          "outputOnFailure": true,
+          "verbosity": "default"
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": false
+        }
+      },
+      {
+        "name": "default",
+        "configurePreset": "default",
+        "hidden": true,
+        "inherits": "test-base"
+      },
+      {
+        "name": "release",
+        "configurePreset": "default",
+        "inherits": "default",
+        "configuration": "Release"
+      },
+      {
+        "name": "debug",
+        "configurePreset": "default",
+        "inherits": "default",
+        "configuration": "Debug"
+      },
+      {
+        "name": "relwithdebinfo",
+        "configurePreset": "default",
+        "inherits": "default",
+        "configuration": "RelWithDebInfo"
+      },
+      {
+          "name": "ci",
+          "configurePreset": "ci",
+          "inherits": "test-base"
+      }
+    ],
+    "packagePresets": [
+      {
+          "name": "ci",
+          "configurePreset": "ci",
+          "generators": ["TGZ"],
+          "configFile": "${sourceDir}/builds/${presetName}/CPackConfig.cmake"
+      }
+    ],
+    "workflowPresets": [
+      {
+        "name": "debug",
+        "steps": [
+            {
+              "type": "configure",
+              "name": "default"
+            },
+            {
+              "type": "build",
+              "name": "debug"
+            },
+            {
+              "type": "test",
+              "name": "debug"
+            }
+        ]
+      },
+      {
+        "name": "release",
+        "steps": [
+          {
+            "type": "configure",
+            "name": "default"
+          },
+          {
+            "type": "build",
+            "name": "release"
+          },
+          {
+            "type": "test",
+            "name": "release"
+          }
+        ]
+      }
+    ]
+  }

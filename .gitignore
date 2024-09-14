@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+# Local CMake files
+CMakeUserPresets.json
+
+# CMake Build folders
+builds/
+
+# IDE files
+.vscode/

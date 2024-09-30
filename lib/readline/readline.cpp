@@ -1,8 +1,5 @@
 module;
 
-#include <ctype.h>
-#include <time.h>
-#include <string.h>
 #include <stdio.h>
 
 #include <readline/readline.h>

@@ -31,7 +31,10 @@
         "cacheVariables": {
             "CMAKE_CONFIGURATION_TYPES": "Release;RelWithDebInfo;Debug",
             "CMAKE_PREFIX_PATH": "$env{CMAKE_PREFIX_PATH}",
-            "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/lld.toolchain.cmake"
+            "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/lld.toolchain.cmake",
+            "CMAKE_CXX_FLAGS": "-stdlib=libc++",
+            "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg/triplets",
+            "VCPKG_TARGET_TRIPLET": "arm64-osx-libcxx"
         }
       },
       {

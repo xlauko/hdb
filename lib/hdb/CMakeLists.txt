@@ -10,6 +10,7 @@ target_sources(libhdb
         FILES
             error.cpp
             libhdb.cpp
+            pipe.cpp
             process.cpp
 )
 

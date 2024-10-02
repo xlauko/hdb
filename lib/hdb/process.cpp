@@ -31,6 +31,8 @@ namespace hdb {
         process(const process &) = delete;
         process &operator=(const process &) = delete;
 
+        friend std::unique_ptr< process > make_process(int pid, bool terminate_on_end);
+
         ~process();
 
         static std::unique_ptr< process > launch(std::filesystem::path path);
@@ -76,6 +78,10 @@ namespace hdb {
         }
     }
 
+    std::unique_ptr< process > make_process(int pid, bool terminate_on_end) {
+        return std::unique_ptr< process >(new process(pid, terminate_on_end));
+    }
+
     std::unique_ptr< process > process::launch(std::filesystem::path path) {
         pid_t pid;
         if ((pid = fork()) < 0) {
@@ -90,7 +96,7 @@ namespace hdb {
             }
         }
 
-        auto p = std::unique_ptr< process >(new process(pid, /* terminate on end */ true));
+        auto p = make_process(pid, /* terminate on end */ true);
         p->wait_on_signal();
         return p;
     }
@@ -104,7 +110,7 @@ namespace hdb {
             error::send_errno("attach failed");
         }
 
-        auto p = std::unique_ptr< process >(new process(pid, /* terminate on end */ false));
+        auto p = make_process(pid, /* terminate on end */ false);
         p->wait_on_signal();
         return p;
     }

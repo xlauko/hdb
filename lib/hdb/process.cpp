@@ -23,7 +23,6 @@ namespace hdb {
         };
 
         struct stop_reason {
-
             stop_reason(int wait_status);
 
             state reason;
@@ -100,11 +99,11 @@ namespace hdb {
         } else if (pid == 0) {
             channel.close_read();
             if (ptrace(PT_TRACE_ME, 0, {}, {}) < 0) {
-                error::send_errno("tracing failed");
+                exit_with_perror(channel, "tracing failed");
             }
 
             if (execlp(path.c_str(), path.c_str(), nullptr) < 0) {
-                error::send_errno("exec failed");
+                exit_with_perror(channel, "exec failed");
             }
         }
 

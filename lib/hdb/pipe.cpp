@@ -93,7 +93,7 @@ namespace hdb {
     }
 
     void pipe::write(std::span< const std::byte > data) {
-        if (::write(_fds[write_fd], data.data(), data.size() < 0)) {
+        if (::write(_fds[write_fd], data.data(), data.size()) < 0) {
             error::send_errno("pipe write failed");
         }
     }

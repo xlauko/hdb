@@ -13,6 +13,13 @@ namespace hdb {
             throw error(what);
         }
 
+        static void send(std::span< const std::byte > bytes) {
+            auto chars = std::views::transform(bytes, [](auto b) {
+                return static_cast< const char >(b);
+            });
+            send(std::string(chars.begin(), chars.end()));
+        }
+
         static void send_errno(const std::string &prefix) {
             send(prefix + ": " + std::strerror(errno));
         }

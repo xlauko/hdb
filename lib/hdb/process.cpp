@@ -5,10 +5,13 @@ module;
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <cerrno>
+#include <cstdlib>
 
 export module hdb:process;
 
 import std;
+import :pipe;
 import :error;
 
 namespace hdb {
@@ -82,11 +85,20 @@ namespace hdb {
         return std::unique_ptr< process >(new process(pid, terminate_on_end));
     }
 
+    void exit_with_perror(hdb::pipe &channel, const std::string &prefix) {
+        auto msg = prefix + ": " + std::strerror(errno);
+        channel.write(std::as_bytes(std::span(msg)));
+        std::exit(EXIT_FAILURE);
+    }
+
     std::unique_ptr< process > process::launch(std::filesystem::path path) {
+        pipe channel(/* close on exec */ true);
+
         pid_t pid;
         if ((pid = fork()) < 0) {
             error::send_errno("fork failed");
         } else if (pid == 0) {
+            channel.close_read();
             if (ptrace(PT_TRACE_ME, 0, {}, {}) < 0) {
                 error::send_errno("tracing failed");
             }
@@ -94,6 +106,15 @@ namespace hdb {
             if (execlp(path.c_str(), path.c_str(), nullptr) < 0) {
                 error::send_errno("exec failed");
             }
+        }
+
+        channel.close_write();
+        auto data = channel.read();
+        channel.close_read();
+
+        if (!data.empty()) {
+            waitpid(pid, nullptr, 0);
+            error::send(data);
         }
 
         auto p = make_process(pid, /* terminate on end */ true);

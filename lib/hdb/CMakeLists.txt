@@ -18,6 +18,7 @@ target_sources(libhdb
     PUBLIC
         FILE_SET CXX_MODULES
         FILES
+            common.cpp
             error.cpp
             libhdb.cpp
             pipe.cpp

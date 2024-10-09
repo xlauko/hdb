@@ -1,0 +1,13 @@
+export module hdb:config;
+
+import std;
+
+export namespace hdb {
+
+    constexpr std::string_view build_type = "$<CONFIG>";
+
+    constexpr std::string_view test_directory = "@CMAKE_BINARY_DIR@/test/$<CONFIG>";
+
+    constexpr std::string_view test_targets_directory = "@CMAKE_BINARY_DIR@/test/targets/$<CONFIG>"
+
+} // namespace hdb

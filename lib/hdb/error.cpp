@@ -9,18 +9,18 @@ import std;
 namespace hdb {
 
     export struct error : std::runtime_error {
-        static void send(const std::string &what) {
+        [[noreturn]] static void send(const std::string &what) {
             throw error(what);
         }
 
-        static void send(std::span< const std::byte > bytes) {
+        [[noreturn]] static void send(std::span< const std::byte > bytes) {
             auto chars = std::views::transform(bytes, [](auto b) {
                 return static_cast< const char >(b);
             });
             send(std::string(chars.begin(), chars.end()));
         }
 
-        static void send_errno(const std::string &prefix) {
+        [[noreturn]] static void send_errno(const std::string &prefix) {
             send(prefix + ": " + std::strerror(errno));
         }
 

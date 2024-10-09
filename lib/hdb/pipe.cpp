@@ -6,6 +6,8 @@ module;
 export module hdb:pipe;
 
 import std;
+
+import :common;
 import :error;
 
 namespace hdb {
@@ -21,11 +23,11 @@ namespace hdb {
 
         ~pipe();
 
-        int get_read() const noexcept  { return _fds[read_fd]; }
-        int get_write() const noexcept { return _fds[write_fd]; }
+        // i32 get_read() const noexcept  { return _fds[read_fd]; }
+        // i32 get_write() const noexcept { return _fds[write_fd]; }
 
-        int realease_read() noexcept  { return release(read_fd); }
-        int realease_write() noexcept { return release(write_fd); }
+        // i32 realease_read() noexcept  { return release(read_fd); }
+        // i32 realease_write() noexcept { return release(write_fd); }
 
         void close_read() noexcept  { close(_fds[read_fd]); }
         void close_write() noexcept { close(_fds[write_fd]); }
@@ -34,18 +36,18 @@ namespace hdb {
         void write(std::span< const std::byte > data);
 
     private:
-        static void close(int &fd) noexcept {
+        static void close(i32 &fd) noexcept {
             if (fd != -1) {
                 ::close(fd);
                 fd = -1;
             }
         }
 
-        int release(unsigned fd) noexcept { return std::exchange(_fds[fd], -1); }
+        i32 release(unsigned fd) noexcept { return std::exchange(_fds[fd], -1); }
 
-        static constexpr unsigned int read_fd = 0;
-        static constexpr unsigned int write_fd = 1;
-        int _fds[2] = {-1, -1};
+        static constexpr u32 read_fd = 0;
+        static constexpr u32 write_fd = 1;
+        i32 _fds[2] = {-1, -1};
     };
 
     pipe::pipe(bool close_on_exec) {

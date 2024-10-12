@@ -6,9 +6,7 @@ import hdb;
 import std;
 import readline;
 
-
-
-auto split(std::string_view line, char delim = ' ') {
+constexpr auto split(std::string_view line, char delim = ' ') {
     return line
         | std::views::split(delim)
         | std::ranges::views::transform([](auto&& sr) {
@@ -26,7 +24,7 @@ std::unique_ptr< hdb::process > attach(int argc, const char* argv[]) {
     }
 }
 
-std::string_view sigabbrev(int sig) {
+constexpr std::string_view sigabbrev(int sig) {
     switch (sig) {
         case SIGABRT: return "ABRT";
         case SIGALRM: return "ALRM";
@@ -97,7 +95,13 @@ void handle_command(std::unique_ptr< hdb::process > &proc, std::string_view line
     }
 }
 
-void main_loop(std::unique_ptr< hdb::process > proc) {
+int main(int argc, const char* argv[]) try {
+    if (argc == 1) {
+        std::println(std::cerr, "Usage: hdb [-p PID] <path>");
+        return 1;
+    }
+
+    auto proc = attach(argc, argv);
     while (auto line = rl::readline_or_recall("hdb> ")) {
         assert(!line->empty());
 
@@ -107,15 +111,6 @@ void main_loop(std::unique_ptr< hdb::process > proc) {
             std::println(std::cerr, "error: ", err.what());
         }
     }
-}
-
-int main(int argc, const char* argv[]) try {
-    if (argc == 1) {
-        std::println(std::cerr, "Usage: hdb [-p PID] <path>");
-        return 1;
-    }
-
-    main_loop(attach(argc, argv));
 } catch (hdb::error &err) {
     std::println(std::cerr, "error: ", err.what());
     return 1;

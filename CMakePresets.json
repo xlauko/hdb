@@ -30,6 +30,9 @@
             "CMAKE_CXX_FLAGS": "-stdlib=libc++",
             "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg/triplets",
             "VCPKG_TARGET_TRIPLET": "arm64-osx-libcxx"
+        },
+        "environment": {
+          "VCPKG_FORCE_SYSTEM_BINARIES=1": "1"
         }
       },
       {

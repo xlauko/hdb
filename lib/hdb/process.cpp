@@ -144,7 +144,7 @@ namespace hdb {
             error::send_errno("attach failed");
         }
 
-        auto p = make_process(pid, /* terminate on end */ false, true);
+        auto p = make_process(pid, /* terminate on end */ false, /* attached */ true);
         p->wait_on_signal();
         return p;
     }

@@ -15,7 +15,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND VCPKG_FEATURE_FLAGS "versions")
 
 project(hdb
-    LANGUAGES C CXX
+    LANGUAGES C CXX ASM
     VERSION 0.0.1
     DESCRIPTION "Debugger Toy Project"
     HOMEPAGE_URL "https://github.com/xlauko/hdb"

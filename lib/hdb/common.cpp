@@ -14,4 +14,11 @@ export namespace hdb {
     using i32 = std::int32_t;
     using i64 = std::int64_t;
 
+    using f32 = float;
+    using f64 = double;
+    using f128 = long double;
+
+    using b64  = std::array< std::byte, 8 >;
+    using b128 = std::array< std::byte, 16 >;
+
 } // namespace hdb

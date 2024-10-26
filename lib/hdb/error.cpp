@@ -6,6 +6,8 @@ export module hdb:error;
 
 import std;
 
+import :bits;
+
 namespace hdb {
 
     export struct error : std::runtime_error {
@@ -14,10 +16,7 @@ namespace hdb {
         }
 
         [[noreturn]] static void send(std::span< const std::byte > bytes) {
-            auto chars = std::views::transform(bytes, [](auto b) {
-                return static_cast< const char >(b);
-            });
-            send(std::string(chars.begin(), chars.end()));
+            send(std::string(to_string_view(bytes)));
         }
 
         [[noreturn]] static void send_errno(const std::string &prefix) {

@@ -19,6 +19,7 @@ target_sources(libhdb
         FILE_SET CXX_MODULES
         FILES
             aarch64.cpp
+            bits.cpp
             common.cpp
             error.cpp
             libhdb.cpp

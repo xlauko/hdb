@@ -8,9 +8,9 @@ export namespace hdb {
 
     template< typename to_t >
     requires std::is_trivially_copyable_v< to_t >
-    constexpr to_t from_bytes(std::span< const std::byte > bytes) noexcept {
+    constexpr to_t from_bytes(std::span< const std::byte > bs) noexcept {
         to_t result;
-        std::memcpy(&result, bytes, sizeof(result));
+        std::memcpy(&result, bs.data(), sizeof(result));
         return result;
     }
 

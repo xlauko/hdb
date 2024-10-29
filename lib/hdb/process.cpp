@@ -1,9 +1,17 @@
 module;
 
-#include <signal.h>
+#include <mach/mach.h>
+#include <mach/mach_vm.h>
+#include <mach/mach_error.h>
+#include <mach/task.h>
+#include <mach/thread_act.h>
+
 #include <sys/ptrace.h>
+#include <sys/sysctl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+#include <signal.h>
 #include <unistd.h>
 #include <cerrno>
 #include <cstdlib>
@@ -12,6 +20,7 @@ export module hdb:process;
 
 import std;
 
+import :registers;
 import :common;
 import :error;
 import :pipe;
@@ -49,18 +58,28 @@ namespace hdb {
 
         pid_t pid() const { return _pid; }
         state state() const { return _state; }
+
+        registers& get_registers() { return *_registers; }
+        const registers& get_registers() const { return *_registers; }
+
       private:
 
         process(pid_t pid, bool terminate_on_end, bool is_attached)
             : _pid(pid)
             , _terminate_on_end(terminate_on_end)
             , _is_attached(is_attached)
+            , _registers(std::make_unique< registers >())
         {}
+
+        void read_all_registers(std::size_t thread_index = 0);
+        void sync_registers_to_thread(std::size_t thread_index = 0);
 
         pid_t _pid = 0;
         bool _terminate_on_end = true;
         bool _is_attached = true;
         enum state _state = state::stopped;
+
+        std::unique_ptr< registers > _registers;
     };
 
     process::~process() {
@@ -181,7 +200,71 @@ namespace hdb {
 
         stop_reason reason(status);
         _state = reason.reason;
+
+        if (_is_attached && _state == state::stopped) {
+            read_all_registers();
+        }
+
         return reason;
     }
+
+    mach_port_t get_task_for_pid(pid_t pid) {
+        mach_port_t task;
+
+        if (task_for_pid(mach_task_self(), pid, &task) != KERN_SUCCESS) {
+            error::send_errno("Could not get task for process");
+        }
+
+        return task;
+    }
+
+    thread_t get_thread_for_pid(pid_t pid, std::size_t thread_index) {
+        mach_port_t task = get_task_for_pid(pid);
+        thread_act_array_t thread_list;
+        mach_msg_type_number_t thread_count;
+
+        if (task_threads(task, &thread_list, &thread_count) != KERN_SUCCESS || thread_count == 0) {
+            error::send_errno("Could not get thread list");
+        }
+
+        thread_t thread = thread_list[thread_index];
+
+        vm_deallocate(
+            mach_task_self(),
+            std::bit_cast< vm_address_t >(thread_list),
+            thread_count * sizeof(thread_t)
+        );
+
+        return thread;
+    }
+
+    void process::read_all_registers(std::size_t thread_index) {
+        thread_t thread = get_thread_for_pid(_pid, thread_index);
+
+        // Read General-Purpose Registers
+        mach_msg_type_number_t state_count = ARM_THREAD_STATE64_COUNT;
+
+        if (thread_get_state(
+            thread, ARM_THREAD_STATE64,
+            std::bit_cast< thread_state_t >(&_registers->_gpr),
+            &state_count) != KERN_SUCCESS
+        ) {
+            error::send_errno("Could not read GPR registers");
+        }
+    }
+
+    void process::sync_registers_to_thread(std::size_t thread_index) {
+        // Assuming we are writing to the first thread for now
+        thread_t thread = get_thread_for_pid(_pid, thread_index);
+
+        // Write General-Purpose Registers
+        arm_thread_state64_t gpr = _registers->_gpr;
+        mach_msg_type_number_t state_count = ARM_THREAD_STATE64_COUNT;
+
+        if (thread_set_state(thread, ARM_THREAD_STATE64, std::bit_cast< thread_state_t >(&gpr), state_count) != KERN_SUCCESS) {
+            error::send_errno("Could not write GPR registers");
+        }
+    }
+
 
 } // namespace hdb

@@ -75,7 +75,6 @@ void print_stop_reason(const hdb::process &proc, const hdb::process::stop_reason
     }
 }
 
-
 void handle_command(std::unique_ptr< hdb::process > &proc, std::string_view line) {
     auto args = split(line);
 

@@ -18,13 +18,13 @@ target_sources(libhdb
     PUBLIC
         FILE_SET CXX_MODULES
         FILES
-            aarch64.cpp
             bits.cpp
             common.cpp
             error.cpp
             libhdb.cpp
             pipe.cpp
             process.cpp
+            registers.cpp
 
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>>/config.cpp
     BASE_DIRS

@@ -3,7 +3,9 @@
 {
 	"name": "C++",
 	"build": {
-		"dockerfile": "Dockerfile"
+		"dockerfile": "Dockerfile",
+		"args": {},
+		"options": [ "--platform=linux/amd64" ]
 	},
 	"runArgs": [
         "--platform",

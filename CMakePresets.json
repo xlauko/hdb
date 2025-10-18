@@ -1,9 +1,9 @@
 {
     "version": 6,
     "cmakeMinimumRequired": {
-      "major": 3,
-      "minor": 30,
-      "patch": 0
+      "major": 4,
+      "minor": 1,
+      "patch": 1
     },
     "configurePresets": [
       {
@@ -29,7 +29,7 @@
             "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/lld.toolchain.cmake",
             "CMAKE_CXX_FLAGS": "-stdlib=libc++",
             "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg/triplets",
-            "VCPKG_TARGET_TRIPLET": "arm64-osx-libcxx"
+            "VCPKG_TARGET_TRIPLET": "x64-linux-libcxx"
         },
         "environment": {
           "VCPKG_FORCE_SYSTEM_BINARIES=1": "1"

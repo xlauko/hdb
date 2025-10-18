@@ -21,4 +21,3 @@ set_tests_properties(hdb-test PROPERTIES
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_subdirectory(targets)

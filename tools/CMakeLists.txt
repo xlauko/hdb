@@ -5,7 +5,6 @@ target_link_libraries(hdb
         hdb::project_options
         hdb::project_warnings
         hdb::libhdb
-        hdb::readline
 )
 
 include(GNUInstallDirs)

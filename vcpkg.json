@@ -5,7 +5,6 @@
     "version": "0.0.1",
     "homepage": "https://github.com/xlauko/hdb",
     "dependencies": [
-        "readline",
         "doctest"
     ]
 }

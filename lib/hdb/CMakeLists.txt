@@ -44,5 +44,4 @@ target_link_libraries(libhdb
         hdb::project_options
     PRIVATE
         hdb::project_warnings
-        hdb::readline
 )

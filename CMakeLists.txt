@@ -1,15 +1,11 @@
-cmake_minimum_required(VERSION 3.30)
-
-if (POLICY CMP0025)
-  cmake_policy(SET CMP0025 NEW)
-endif ()
+cmake_minimum_required(VERSION 4.1)
 
 if (POLICY CMP0116)
   cmake_policy(SET CMP0116 NEW)
 endif ()
 
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
-set(CMAKE_CXX_MODULE_STD 1)
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
+set(CMAKE_CXX_MODULE_STD ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND VCPKG_FEATURE_FLAGS "versions")
@@ -23,11 +19,6 @@ project(hdb
 
 include(prevent_in_source_builds)
 
-#
-# setup dependencies
-#
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(readline REQUIRED IMPORTED_TARGET readline)
 
 #
 # general project options
@@ -57,7 +48,6 @@ add_library(hdb::project_warnings ALIAS hdb_project_warnings)
 include(compiler_warnings)
 set_project_warnings(hdb_project_warnings)
 
-
 #
 # allow for static analysis options
 #
@@ -72,19 +62,3 @@ if (ENABLE_TESTING)
   enable_testing()
   add_subdirectory(test)
 endif()
-
-include(GNUInstallDirs)
-
-install(TARGETS hdb
-    EXPORT hdb-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-install(EXPORT hdb-targets
-    FILE hdb-config.cmake
-    NAMESPACE hdb::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/hdb
-)

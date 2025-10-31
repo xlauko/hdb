@@ -17,7 +17,13 @@ RUN cmake -S /tmp/clang-source/llvm -B /tmp/clang-source/build-llvm -DCMAKE_BUIL
     -DLLVM_UNREACHABLE_OPTIMIZE=ON \
     -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
     -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-    -DLLVM_ENABLE_PROJECTS="clang" -G Ninja
+    -DLLVM_ENABLE_PROJECTS="clang" \
+    -DLIBCXX_ENABLE_MODULES=ON \
+    -DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=ON \
+    -DLIBCXX_CXX_STANDARD=26 \
+    -DLIBCXX_CXX_FLAGS="-freflection-latest -fmodules" \
+    -DLIBCXXABI_CXX_FLAGS="-freflection-latest" \
+    -G Ninja
 RUN cmake --build /tmp/clang-source/build-llvm -j16
 RUN cmake --install /tmp/clang-source/build-llvm --prefix /usr/local/
 
@@ -91,11 +97,16 @@ RUN su vscode -c "git clone https://github.com/microsoft/vcpkg.git /home/vscode/
 # Developer utilities
 #------------------------------------------------------------------------------
 RUN export DEBIAN_FRONTEND=noninteractive \
+    && add-apt-repository ppa:git-core/ppa \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
         iwyu \
         bear \
+        git \
+        nodejs npm \
     && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g @withgraphite/graphite-cli@stable
 
 #------------------------------------------------------------------------------
 # Environment setup

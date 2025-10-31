@@ -27,7 +27,7 @@
             "CMAKE_CONFIGURATION_TYPES": "Release;RelWithDebInfo;Debug",
             "CMAKE_PREFIX_PATH": "$env{CMAKE_PREFIX_PATH}",
             "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/lld.toolchain.cmake",
-            "CMAKE_CXX_FLAGS": "-stdlib=libc++",
+            "CMAKE_CXX_FLAGS": "-stdlib=libc++ -freflection-latest",
             "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg/triplets",
             "VCPKG_TARGET_TRIPLET": "x64-linux-libcxx"
         },

@@ -20,8 +20,10 @@ target_sources(libhdb
         FILES
             bits.cpp
             common.cpp
+            enums.cpp
             error.cpp
             libhdb.cpp
+            meta.cpp
             pipe.cpp
             process.cpp
             registers.cpp

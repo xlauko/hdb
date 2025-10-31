@@ -23,11 +23,11 @@ namespace hdb {
 
         ~pipe();
 
-        // i32 get_read() const noexcept  { return _fds[read_fd]; }
-        // i32 get_write() const noexcept { return _fds[write_fd]; }
+        i32 get_read() const noexcept  { return _fds[read_fd]; }
+        i32 get_write() const noexcept { return _fds[write_fd]; }
 
-        // i32 realease_read() noexcept  { return release(read_fd); }
-        // i32 realease_write() noexcept { return release(write_fd); }
+        i32 realease_read() noexcept  { return release(read_fd); }
+        i32 realease_write() noexcept { return release(write_fd); }
 
         void close_read() noexcept  { close(_fds[read_fd]); }
         void close_write() noexcept { close(_fds[write_fd]); }
@@ -51,16 +51,8 @@ namespace hdb {
     };
 
     pipe::pipe(bool close_on_exec) {
-        if (::pipe(_fds) < 0) {
+        if (::pipe2(_fds, close_on_exec ? O_CLOEXEC : 0) < 0) {
             error::send_errno("pipe creation failed");
-        }
-
-        if (close_on_exec) {
-            for (auto& fd : _fds) {
-                if (::fcntl(fd, F_SETFD, FD_CLOEXEC) < 0) {
-                    error::send_errno("setting close-on-exec flag failed");
-                }
-            }
         }
     }
 

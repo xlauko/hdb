@@ -8,4 +8,6 @@ export namespace hdb::cfg {
 
     const std::filesystem::path test_directory = "@CMAKE_BINARY_DIR@/test/$<CONFIG>";
 
+    const std::filesystem::path test_targets_directory = "@CMAKE_BINARY_DIR@/test/targets/$<CONFIG>";
+
 } // namespace hdb::cfg

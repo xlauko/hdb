@@ -84,7 +84,7 @@ namespace hdb::test {
         proc->resume();
         proc->wait_on_signal();
         proc->resume();
-        // REQUIRE_THROWS_AS(proc->resume(), hdb::error);
+        REQUIRE_THROWS_AS(proc->resume(), hdb::error);
     } // process::resume already terminated
 
     TEST_SUITE_END(); // process

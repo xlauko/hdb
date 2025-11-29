@@ -13,8 +13,20 @@ constexpr auto split(std::string_view line, char delim = ' ') {
         });
 }
 
+struct options {
+    [[=hdb::clap::abbreviate]]
+    pid_t pid;
 
-int main() try {
+    [[=hdb::clap::positional]]
+    std::filesystem::path program;
+
+    [[=hdb::clap::trailing_var_arg]]
+    std::vector<std::string_view> args;
+};
+
+int main(int argc, char *argv[]) try {
+    auto args = hdb::clap::args_t(argv + 1, argv + argc);
+    // TODO: auto opts = hdb::clap::parse<options>(args);
 } catch (hdb::error &err) {
     std::println(std::cerr, "error: ", err.what());
     return 1;

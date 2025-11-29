@@ -19,6 +19,7 @@ target_sources(libhdb
         FILE_SET CXX_MODULES
         FILES
             bits.cpp
+            clap.cpp
             common.cpp
             enums.cpp
             error.cpp

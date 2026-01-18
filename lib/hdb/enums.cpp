@@ -1,12 +1,10 @@
 module;
 
-#include <experimental/meta>
+#include <string_view>
+#include <type_traits>
+#include <meta>
 
 export module hdb:enums;
-
-import std;
-
-import :meta;
     
 export namespace hdb {
 
@@ -15,12 +13,13 @@ export namespace hdb {
 
     template< enum_type enum_t >
     constexpr std::string_view enum_to_string(enum_t value) {
-        std::string_view result = "<unnamed>";
-        [:expand(enumerators_of(^^enum_t)):] >> [&]<auto e>{
-            if (value == [:e:])
-                result = identifier_of(e);
-        };
-        return result;
+        template for (constexpr auto e : std::meta::enumerators_of(^^enum_t)) {
+            if (value == [:e:]) {
+              return std::meta::identifier_of(e);
+            }
+        }
+        
+        return "<unnamed>";
     }
 
 } // namespace hdb

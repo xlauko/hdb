@@ -1,6 +1,7 @@
 #include <doctest/doctest.h>
 
 #include <csignal>
+#include <cerrno>
 
 import std;
 import hdb;

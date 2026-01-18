@@ -7,11 +7,6 @@ endif ()
 set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
 set(CMAKE_CXX_MODULE_STD ON)
 
-# Configure flags for building the standard library module
-# This ensures the std.pcm is built with reflection enabled
-# Set CMAKE_CXX_FLAGS_INIT before project() so it applies to the auto-generated std module
-set(CMAKE_CXX_FLAGS_INIT "-freflection-latest")
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND VCPKG_FEATURE_FLAGS "versions")
 
@@ -32,11 +27,6 @@ add_library(hdb_project_options INTERFACE)
 add_library(hdb::project_options ALIAS hdb_project_options)
 target_compile_features(hdb_project_options INTERFACE cxx_std_26)
 set_target_properties(hdb_project_options PROPERTIES CXX_EXTENSIONS OFF)
-
-target_compile_options(hdb_project_options INTERFACE
-  "-freflection-latest"
-  "-Wno-module-file-config-mismatch"
-)
 
 include(sanitizers)
 enable_sanitizers(hdb_project_options)

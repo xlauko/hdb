@@ -14,13 +14,10 @@ constexpr auto split(std::string_view line, char delim = ' ') {
 }
 
 struct options {
-    [[=hdb::clap::abbreviate]]
     pid_t pid;
 
-    [[=hdb::clap::positional]]
     std::filesystem::path program;
 
-    [[=hdb::clap::trailing_var_arg]]
     std::vector<std::string_view> args;
 };
 

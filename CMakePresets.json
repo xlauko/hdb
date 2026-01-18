@@ -25,11 +25,7 @@
         "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "cacheVariables": {
             "CMAKE_CONFIGURATION_TYPES": "Release;RelWithDebInfo;Debug",
-            "CMAKE_PREFIX_PATH": "$env{CMAKE_PREFIX_PATH}",
-            "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/lld.toolchain.cmake",
-            "CMAKE_CXX_FLAGS": "-stdlib=libc++ -freflection-latest",
-            "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg/triplets",
-            "VCPKG_TARGET_TRIPLET": "x64-linux-libcxx"
+            "CMAKE_PREFIX_PATH": "$env{CMAKE_PREFIX_PATH}"
         },
         "environment": {
           "VCPKG_FORCE_SYSTEM_BINARIES=1": "1"
@@ -116,7 +112,10 @@
         "name": "debug",
         "configurePreset": "default",
         "inherits": "default",
-        "configuration": "Debug"
+        "configuration": "Debug",
+        "environment": {
+          "LD_LIBRARY_PATH": "/opt/gcc-master/lib64"
+        }
       },
       {
         "name": "relwithdebinfo",

@@ -15,7 +15,6 @@ import std;
 import :registers;
 import :common;
 import :error;
-import :enums;
 import :pipe;
 
 namespace hdb {
@@ -23,8 +22,6 @@ namespace hdb {
     export struct process
     {
         enum class state { stopped, running, exited, terminated };
-
-        static_assert(enum_to_string(state::stopped) == "stopped");
 
         struct stop_reason
         {
